@@ -10,18 +10,37 @@ const ai = new GoogleGenAI({
     apikey:process.env.GEMINI_API_KEY
 })
 
-const main = async () => {
-    const responseStream = await ai.models.generateContentStream({
-    model: "gemini-3.8-flash",
-    contents: "Explain about ai",
-  });
+app.use(express.json());
 
-  for await (const chunk of responseStream) {
-    console.log(chunk.text);
-  }
+//streaming
+// const main = async () => {
+//     const responseStream = await ai.models.generateContentStream({
+//     model: "gemini-3.8-flash",
+//     contents: "Explain about ai",
+//   });
 
-}
-main();
+//   for await (const chunk of responseStream) {
+//     console.log(chunk.text);
+//   }
+
+// }
+// main();
+
+
+// project
+
+app.post("/chat",async (req,res)=>{
+    const {prompt}=req.body
+    const result=await ai.models.generateContent({
+        model:"gemini-3.5-flash",
+        contents:prompt
+    })
+
+    return res.json(result.text)
+
+})
+
+
 
 
 app.listen(PORT,()=>{
