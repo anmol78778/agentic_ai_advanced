@@ -5,10 +5,11 @@ import { GoogleGenAI } from "@google/genai";
 const app=express();
 const PORT=process.env.PORT || 5000;
 
-
-const ai = new GoogleGenAI({
-    apikey:process.env.GEMINI_API_KEY
-})
+import { ChatGoogle } from "@langchain/google";
+import { ChatGroq } from "@langchain/groq"
+// const ai = new GoogleGenAI({
+//     apikey:process.env.GEMINI_API_KEY
+// })
 
 app.use(express.json());
 
@@ -29,17 +30,46 @@ app.use(express.json());
 
 // project
 
+// app.post("/chat",async (req,res)=>{
+//     const {prompt}=req.body
+//     const result=await ai.models.generateContent({
+//         model:"gemini-3.5-flash",
+//         contents:prompt
+//     })
+
+//     return res.json(result.text)
+
+// })
+
+
+// langchain
+
+
+
 app.post("/chat",async (req,res)=>{
     const {prompt}=req.body
-    const result=await ai.models.generateContent({
-        model:"gemini-3.5-flash",
-        contents:prompt
+    const ai = new ChatGroq({
+        model:"openai/gpt-oss-120b",
+        temperature:0.7,
+        // maxOutputTokens:90
     })
 
-    return res.json(result.text)
+    // const result=await ai.invoke(prompt)
+    const result=await ai.invoke([
+        {
+            role:"system",
+            content:"You are a helpful assistant"
+        },
+
+        {
+            role:"user",
+            content:prompt
+        }
+    ])
+
+    return res.json(result.content)
 
 })
-
 
 
 
