@@ -10,7 +10,6 @@ import z from "zod";
 import { ChatGroq } from "@langchain/groq"
 import { MessagesAnnotation, messagesDeltaReducer, StateGraph,MemorySaver, StateSchema, interrupt, Command } from "@langchain/langgraph";
 import { MongoClient } from "mongodb";
-
 const app = express()
 
 const port = process.env.PORT || 5000
@@ -19,7 +18,11 @@ const port = process.env.PORT || 5000
 
 app.use(express.json())
 
-const checkpointer = new MemorySaver()
+
+const client = new MongoClient("mongodb+srv://anmolkroe_db_user:dIIv1QhLbBOnD94L@cluster0.nm1d9yx.mongodb.net/")
+const checkpointer = new MongoDBSaver({ client });
+
+// const checkpointer = new MemorySaver()
 
 // ai agent = llm + tools 
 
@@ -100,6 +103,7 @@ const graph=new StateGraph(MessagesAnnotation)
 .addConditionalEdges("agent",shouldContinue)
 .addEdge("tool_node","agent")
 .compile({checkpointer})
+
 
 
 
