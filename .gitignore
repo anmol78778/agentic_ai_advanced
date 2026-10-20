@@ -1,4 +1,5 @@
 .env
 lv1/.env
 lv2/.env
+lv3/.env
 node_modules/
